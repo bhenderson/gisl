@@ -1,0 +1,45 @@
+#!/bin/bash
+
+##
+# A GISt tool for your Local file system.
+#
+# Example:
+#
+# gisl config core.worktree path           # default: /
+# gisl config gisl.dir ~/.my_cool_repo.git # default: ~/.gisl.git
+# gisl init                                # (re)initialize gisl
+
+# NOTE: if worktree and gisl.dir are the same, this file is pointless
+# set environment variables to override gisl config
+# export GISL_CONFIG (in your .bashrc for example) if you want to use something
+# other than ~/.gislconfig
+
+export GIT_CONFIG=${GISL_CONFIG:-~/.gislconfig}
+touch $GIT_CONFIG
+
+set_config() {
+  local config_var="$1"
+  test -n "${!config_var}" && return
+
+  local config_name="$2" default="$3"
+  local override=$(git config --get "${config_name}")
+
+  eval export $config_var=\"${override:-$default}\"
+}
+
+
+# by separating the GIT_DIR from the GIT_WORKING_TREE git allows us to keep
+# track of files in a directory were we otherwise would not want a git repo.
+# An added benefit of this is that gisl ls-files will only show tracked files in your CWD.
+set_config GIT_DIR gisl.dir ~/.gisl.git
+set_config GIT_WORK_TREE core.worktree /
+
+# With gists, we don't care about the commit message. By making the GIT_EDITOR
+# simple, we can simply commit. git messages are still supported though.
+set_config GIT_EDITOR core.editor 'echo GISL >'
+
+# Specify the template dir. This is currently unused, but can be useful in the
+# future if we want to create gisl hooks/excludes.
+#set_config GIT_TEMPLATE_DIR init.templatedir ''
+
+git "$@"
