@@ -17,6 +17,7 @@
 export GIT_CONFIG=${GISL_CONFIG:-~/.gislconfig}
 touch $GIT_CONFIG
 
+# set_config EXPORT_VAR git_config_name default_value
 set_config() {
   local config_var="$1"
   test -n "${!config_var}" && return
@@ -31,9 +32,9 @@ set_include() {
   local config="$GIT_DIR/config"
   test -f "$config" || return
 
-  cmd="git config --file $config"
-  $cmd --get-all include.path | grep "$GIT_CONFIG" -q ||
-    $cmd --add include.path "$GIT_CONFIG"
+  # can be run multiple times
+  git config --file $config --replace-all \
+    include.path "$GIT_CONFIG" "^${GIT_CONFIG}$"
 }
 
 
@@ -44,7 +45,7 @@ set_config GIT_DIR gisl.dir ~/.gisl.git
 set_config GIT_WORK_TREE core.worktree /
 
 # With gists, we don't care about the commit message. By making the GIT_EDITOR
-# simple, we can simply commit. git messages are still supported though.
+# simple, we can simply commit. git messages are still supported though (with -m).
 set_config GIT_EDITOR core.editor 'echo GISL >'
 
 # Specify the template dir. This is currently unused, but can be useful in the
