@@ -27,6 +27,15 @@ set_config() {
   eval export $config_var=\"${override:-$default}\"
 }
 
+set_include() {
+  local config="$GIT_DIR/config"
+  test -f "$config" || return
+
+  cmd="git config --file $config"
+  $cmd --get-all include.path | grep "$GIT_CONFIG" -q ||
+    $cmd --add include.path "$GIT_CONFIG"
+}
+
 
 # by separating the GIT_DIR from the GIT_WORKING_TREE git allows us to keep
 # track of files in a directory were we otherwise would not want a git repo.
@@ -41,5 +50,10 @@ set_config GIT_EDITOR core.editor 'echo GISL >'
 # Specify the template dir. This is currently unused, but can be useful in the
 # future if we want to create gisl hooks/excludes.
 #set_config GIT_TEMPLATE_DIR init.templatedir ''
+
+# hack because git log et. al. do not respect GIT_CONFIG. so we hack it by
+# making $GIT_DIR/config source $GISL_CONFIG
+# this requires git >= 1.7.10
+set_include
 
 git "$@"
