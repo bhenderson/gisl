@@ -14,6 +14,11 @@
 # export GISL_CONFIG (in your .bashrc for example) if you want to use something
 # other than ~/.gislconfig
 
+test -n "$DEBUG" && git() {
+  echo "$@" >&2
+  command git "$@"
+}
+
 export GIT_CONFIG=${GISL_CONFIG:-~/.gislconfig}
 touch $GIT_CONFIG
 
