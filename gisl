@@ -47,15 +47,20 @@ set_include() {
 # track of files in a directory were we otherwise would not want a git repo.
 # An added benefit of this is that gisl ls-files will only show tracked files in your CWD.
 set_config GIT_DIR gisl.dir ~/.gisl.git
-set_config GIT_WORK_TREE core.worktree /
 
 # With gists, we don't care about the commit message. By making the GIT_EDITOR
 # simple, we can simply commit. git messages are still supported though (with -m).
-set_config GIT_EDITOR core.editor 'echo GISL >'
+# we want to specify a default, but we don't want to write it out to a config.
+# We also want it to be overrideable
+set_config GIT_EDITOR core.editor 'echo'
 
 # Specify the template dir. This is currently unused, but can be useful in the
 # future if we want to create gisl hooks/excludes.
 #set_config GIT_TEMPLATE_DIR init.templatedir ''
+
+# this lets us add any file to git.
+# this does't need to be run after init... but how do we know?
+set_config GIT_WORK_TREE core.worktree /
 
 # hack because git log et. al. do not respect GIT_CONFIG. so we hack it by
 # making $GIT_DIR/config source $GISL_CONFIG
