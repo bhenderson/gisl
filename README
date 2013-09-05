@@ -1,1 +1,24 @@
-git log does not respect GIT_CONFIG var :/
+A GISt tool for Local files.
+
+The idea originally spawned from the idea of being able to quickly create a
+gist of any file on my local system. To me, the idea behind a gist is a version
+controlled file where commit messages are not important.
+
+With this tool, my entire file system can be managed by git without having git
+think that every directory is a git repository.
+
+Example:
+
+# optional
+gisl config core.worktree /path/you/want/to/track  # default: /
+gisl config gisl.dir ~/.my_cool_repo.git           # default: ~/.gisl.git
+
+# required
+gisl init                                          # (re)initialize gisl
+
+NOTE: if worktree and gisl.dir are the same, this file is pointless
+set environment variables to override gisl config
+export GISL_CONFIG (in your .bashrc for example) if you want to use something
+other than ~/.gislconfig
+
+To install, just clone the repo and put gisl in your $PATH
