@@ -5,9 +5,9 @@
 #
 # Example:
 #
-# gisl config core.worktree path           # default: /
-# gisl config gisl.dir ~/.my_cool_repo.git # default: ~/.gisl.git
-# gisl init                                # (re)initialize gisl
+# gisl config core.worktree /path/you/want/to/track  # default: /
+# gisl config gisl.dir ~/.my_cool_repo.git           # default: ~/.gisl.git
+# gisl init                                          # (re)initialize gisl
 
 # NOTE: if worktree and gisl.dir are the same, this file is pointless
 # set environment variables to override gisl config
