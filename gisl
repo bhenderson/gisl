@@ -33,6 +33,13 @@ set_include() {
     include.path "$GIT_CONFIG" "^${GIT_CONFIG}$"
 }
 
+set_submodules() {
+  test -w "$GIT_WORK_TREE" || {
+  # .gitmodules has to be in the root of the working tree, but it can be a
+  # symlink. git can't touch files in / so symlink .gitmodules to GIT_CONFIG.
+    :
+  }
+}
 
 # by separating the GIT_DIR from the GIT_WORKING_TREE git allows us to keep
 # track of files in a directory were we otherwise would not want a git repo.
