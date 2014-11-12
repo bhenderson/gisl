@@ -50,7 +50,7 @@ set_config GIT_DIR gisl.dir ~/.gisl.git
 # simple, we can simply commit. git messages are still supported though (with -m).
 # we want to specify a default, but we don't want to write it out to a config.
 # We also want it to be overrideable
-set_config GIT_EDITOR core.editor 'echo'
+set_config GIT_EDITOR core.editor 'echo Commit >'
 
 # Specify the template dir. This is currently unused, but can be useful in the
 # future if we want to create gisl hooks/excludes.
