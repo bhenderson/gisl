@@ -29,3 +29,7 @@ gisl init                                          # (re)initialize gisl
 # add a new file to track
 gisl add /path/to/file
 gisl commit
+
+# Issues
+checkout to other machines is difficult
+checkout files to directories where you don't have permissions is difficult
