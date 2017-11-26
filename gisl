@@ -2,67 +2,13 @@
 
 ##
 # A GISt tool for your Local file system.
-#
-# See README
 
-test -n "$DEBUG" && git() {
-  echo "$@" >&2
-  command git "$@"
-}
+old_git_config=${GIT_CONFIG:-~/.gitconfig}
+export GIT_CONFIG=${GISL_CONFIG:-$HOME/.gislconfig}
+export GIT_DIR=${GISL_DIR:-$HOME/.gisl.git}
+export GIT_WORK_TREE=${GISL_WORK_TREE:-$HOME}
+export GIT_EDITOR=${GISL_EDITOR:-'echo Commit >'}
 
-export GIT_CONFIG=${GISL_CONFIG:-~/.gislconfig}
-touch $GIT_CONFIG
+git config includes.path "$old_git_config"
 
-# set_config EXPORT_VAR git_config_name default_value
-set_config() {
-  local config_var="$1"
-  test -n "${!config_var}" && return
-
-  local config_name="$2" default="$3"
-  local override=$(git config --get "${config_name}")
-
-  eval export $config_var=\"${override:-$default}\"
-}
-
-set_include() {
-  local config="$GIT_DIR/config"
-  test -f "$config" || return
-
-  # can be run multiple times
-  git config --file $config --replace-all \
-    include.path "$GIT_CONFIG" "^${GIT_CONFIG}$"
-}
-
-set_submodules() {
-  test -w "$GIT_WORK_TREE" || {
-  # .gitmodules has to be in the root of the working tree, but it can be a
-  # symlink. git can't touch files in / so symlink .gitmodules to GIT_CONFIG.
-    :
-  }
-}
-
-# by separating the GIT_DIR from the GIT_WORKING_TREE git allows us to keep
-# track of files in a directory were we otherwise would not want a git repo.
-# An added benefit of this is that gisl ls-files will only show tracked files in your CWD.
-set_config GIT_DIR gisl.dir ~/.gisl.git
-
-# With gists, we don't care about the commit message. By making the GIT_EDITOR
-# simple, we can simply commit. git messages are still supported though (with -m).
-# we want to specify a default, but we don't want to write it out to a config.
-# We also want it to be overrideable
-set_config GIT_EDITOR core.editor 'echo Commit >'
-
-# Specify the template dir. This is currently unused, but can be useful in the
-# future if we want to create gisl hooks/excludes.
-#set_config GIT_TEMPLATE_DIR init.templatedir ''
-
-# this lets us add any file to git.
-# this does't need to be run after init... but how do we know?
-set_config GIT_WORK_TREE core.worktree /
-
-# hack because git log et. al. do not respect GIT_CONFIG. so we hack it by
-# making $GIT_DIR/config source $GISL_CONFIG
-# this requires git >= 1.7.10
-set_include
-
-git "$@"
+exec git "$@"
