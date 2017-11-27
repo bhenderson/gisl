@@ -4,11 +4,12 @@
 # A GISt tool for your Local file system.
 
 old_git_config=${GIT_CONFIG:-~/.gitconfig}
-export GIT_CONFIG=${GISL_CONFIG:-$HOME/.gislconfig}
+#export GIT_CONFIG=${GISL_CONFIG:-$HOME/.gislconfig}
 export GIT_DIR=${GISL_DIR:-$HOME/.gisl.git}
 export GIT_WORK_TREE=${GISL_WORK_TREE:-$HOME}
 export GIT_EDITOR=${GISL_EDITOR:-'echo Commit >'}
 
 git config includes.path "$old_git_config"
+git config core.excludesfile ${GISL_IGNORE:-'~/.gislignore'}
 
 exec git "$@"
