@@ -1,15 +1,24 @@
 #!/bin/bash
 
 ##
-# A GISt tool for your Local file system.
+# A GISt tool for your Local file system. Track the history of individual files anywhere in your filesystem.
 
-old_git_config=${GIT_CONFIG:-~/.gitconfig}
-#export GIT_CONFIG=${GISL_CONFIG:-$HOME/.gislconfig}
-export GIT_DIR=${GISL_DIR:-$HOME/.gisl.git}
-export GIT_WORK_TREE=${GISL_WORK_TREE:-$HOME}
+export GIT_DIR=${GISL_DIR:-~/.gisl.git}
+export GIT_WORK_TREE=${GISL_WORK_TREE:-~/}
+
+# make commit messages optional since the important part is the date and file
+# content. If you do care, you can always specify it with -m.
 export GIT_EDITOR=${GISL_EDITOR:-'echo Commit >'}
 
-git config includes.path "$old_git_config"
-git config core.excludesfile ${GISL_IGNORE:-'~/.gislignore'}
+if ! git rev-parse --git-dir &>/dev/null; then
+  # initialize if not already
+  git init
+  # exclude everything. any file added will have to be added with --force, but
+  # this prevents the entire directory tree from showing up as not tracked.
+  echo '*' > "$(git rev-parse --git-path info/exclude)"
+  # add the user's regular git config for aliases, etc.
+  old_git_config=${GIT_CONFIG:-~/.gitconfig}
+  git config include.path "$old_git_config"
+fi
 
 exec git "$@"
