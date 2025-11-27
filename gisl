@@ -13,9 +13,8 @@ export GIT_EDITOR=${GISL_EDITOR:-'echo Commit >'}
 if ! git rev-parse --git-dir &>/dev/null; then
   # initialize if not already
   git init
-  # exclude everything. any file added will have to be added with --force, but
-  # this prevents the entire directory tree from showing up as not tracked.
-  echo '*' > "$(git rev-parse --git-path info/exclude)"
+  # hide untracked files so that git status is not noisy.
+  git config status.showUntrackedFiles no
   # add the user's regular git config for aliases, etc.
   old_git_config=${GIT_CONFIG:-~/.gitconfig}
   git config include.path "$old_git_config"
